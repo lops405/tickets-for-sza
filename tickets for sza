@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: pink;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            position: relative;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: yellow;
+            color: black;
+            font-size: 3rem;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: bounce 1.5s infinite alternate;
+        }
+        @keyframes bounce {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+        h1 {
+            font-size: 3rem;
+            color: white;
+            text-shadow: 3px 3px 10px red;
+            margin-bottom: 20px;
+        }
+        img {
+            width: 400px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 20px white;
+            margin-bottom: 20px;
+        }
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        button {
+            font-size: 2rem;
+            padding: 15px 30px;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease-in-out;
+        }
+        #yes {
+            background-color: red;
+            color: white;
+            box-shadow: 0px 0px 15px red;
+            position: relative;
+            z-index: 10;
+        }
+        #no {
+            background-color: white;
+            color: red;
+            border: 2px solid red;
+            position: absolute;
+            transition: 0.3s;
+            z-index: 5;
+        }
+        .heart {
+            position: absolute;
+            font-size: 2.5rem;
+            color: red;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            from { transform: translateY(-100vh); }
+            to { transform: translateY(90vh); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Full-Screen Music Button -->
+    <button id="playMusic" class="overlay" onclick="startMusic()">🎶 PRESS ME FIRSTTTT!!!!! 🎶</button>
+
+    <!-- Music -->
+    <audio id="bgMusic" loop>
+        <source src="https://attachments.are.na/8990656/69d0ec2ad031ffd86e43d66d5306f6c2.mp3?1601954891" type="audio/mpeg">
+    </audio>
+
+    <h1 id="question">Will you be my Valentine? 💖</h1>
+    <img id="catImage" src="https://media1.tenor.com/m/92nQiCI4K_sAAAAC/valentines-day.gif" alt="Cute Cat">
+    
+    <div class="buttons">
+        <button id="yes" onclick="accept()">YESSSS!!!!</button>
+        <button id="no" onclick="reject()">no i want u to die</button>
+    </div>
+
+    <script>
+        let counter = 0;
+        let audio = document.getElementById("bgMusic");
+
+        const messages = [
+            "Excuse the fuck me????",
+            "I KNOW u didn't press no again.... 💔",
+            "I hope u fall into a ditch 😾",
+	        "I'm asking nicely....",
+            "You thought u had a choice 😈",
+            "STOP PRESSING NO",
+            "I SAID STOPPPPPP"
+        ];
+        const catImages = [
+            "https://media1.tenor.com/m/nBR_oOC_J0YAAAAC/cat-angry.gif",
+            "https://media1.tenor.com/m/t0eFbcxLGgIAAAAC/fat-cat-laser-eyes.gif",
+            "https://media1.tenor.com/m/goRrUiPLo0IAAAAd/knife-cat-cat-knife.gif",
+            "https://media.tenor.com/zcw-ouHZPqMAAAAi/mochi-cat-chibi-cat.gif",
+            "https://media.tenor.com/hTCAeeXfv_gAAAAi/somad.gif",
+            "https://media1.tenor.com/m/G9qmH_P1nbsAAAAd/angry-angry-cat.gif"
+        ];
+
+        function startMusic() {
+	    audio.currentTime = 15;
+            audio.play().catch(error => console.error("Autoplay blocked:", error));
+            document.getElementById("playMusic").style.display = "none"; 
+            spawnHearts();
+        }
+
+        function accept() {
+            document.body.innerHTML = `
+                <h1>YIPPEEEE you earned yourself a singular cookie from Crumbl. I love youuuu so much</h1>
+                <img src='https://media1.tenor.com/m/y2NpzCxHOTsAAAAC/mochi-mochimochi.gif' style="width: 500px;">
+            `;
+
+            // Keep music playing without restarting
+            if (audio && !audio.paused) {
+       	    	document.body.appendChild(audio);
+            }
+        }
+
+        function reject() {
+            let yesButton = document.getElementById("yes");
+            let noButton = document.getElementById("no");
+
+            document.getElementById("question").innerText = messages[Math.min(counter, messages.length - 1)];
+            document.getElementById("catImage").src = catImages[Math.min(counter, catImages.length - 1)];
+            
+            if (counter >= messages.length - 1) {
+                noButton.innerText = "IM SORRY YES I WANNA BE YOUR VALENTINES KING";
+		        noButton.onclick = accept;
+            }
+
+            moveNoButton();
+            makeYesBigger();
+            counter++;
+        }
+
+        function moveNoButton() {
+            let button = document.getElementById("no");
+            let yesButton = document.getElementById("yes");
+
+            let maxX = window.innerWidth - button.offsetWidth;
+            let maxY = window.innerHeight - button.offsetHeight;
+
+            let newX, newY, overlap;
+
+            do {
+                newX = Math.random() * maxX;
+                newY = Math.random() * maxY;
+
+                let yesRect = yesButton.getBoundingClientRect();
+                let noRect = { left: newX, right: newX + button.offsetWidth, top: newY, bottom: newY + button.offsetHeight };
+
+                overlap = !(noRect.right < yesRect.left || noRect.left > yesRect.right || noRect.bottom < yesRect.top || noRect.top > yesRect.bottom);
+            } while (overlap);
+
+            button.style.left = `${newX}px`;
+            button.style.top = `${newY}px`;
+        }
+
+        function makeYesBigger() {
+            let yesButton = document.getElementById("yes");
+            let currentSize = parseFloat(window.getComputedStyle(yesButton).fontSize);
+            yesButton.style.fontSize = Math.min(currentSize + 10, 80) + "px";
+        }
+
+        function spawnHearts() {
+            setInterval(() => {
+		for (let i = 0; i < 5; i++) {
+                let heart = document.createElement("div");
+                heart.innerHTML = "❤️";
+                heart.classList.add("heart");
+                heart.style.left = Math.random() * 100 + "vw";
+                heart.style.animationDuration = (Math.random() * 2 + 1) + "s";
+                document.body.appendChild(heart);
+            }
+        }, 100);
+}
+    </script>
+
+</body>
+</html>
